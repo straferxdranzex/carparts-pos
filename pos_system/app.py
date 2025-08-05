@@ -80,6 +80,18 @@ with tab2:
                 except ValueError as e:
                     st.error(str(e))
 
+        st.write("### 🔴 Delete an Item")
+        part_to_delete = st.selectbox(
+            "Select part to delete",
+            options=df["id"],
+            format_func=lambda x: f"{df[df['id'] == x]['name'].values[0]}"
+        )
+        if st.button("🗑️ Delete Selected Item"):
+            df = delete_item(df, part_to_delete)
+            save_inventory(df)
+            st.warning("Item deleted from inventory.")
+
+
 
 # 3. Partner Profit Split
 with tab3:
@@ -97,3 +109,12 @@ with tab3:
     profit_df["Partner A (60%)"] = profit_df["total_profit_pkr"] * 0.6
     profit_df["Partner B (40%)"] = profit_df["total_profit_pkr"] * 0.4
     st.dataframe(profit_df, use_container_width=True)
+
+    st.write("### 🔁 Reset Application")
+    with st.expander("⚠️ Reset All Data (Danger Zone)"):
+        st.warning("This will permanently delete ALL inventory, sales, and profit data.")
+        if st.button("❌ Reset Everything"):
+            reset_inventory()
+            st.success("Application has been reset.")
+            st.experimental_rerun()
+
