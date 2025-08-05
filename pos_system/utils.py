@@ -40,21 +40,25 @@ def calculate_profit(buying_price, shipping_price, rate, margin):
     return selling_price - base_cost
 
 
-def mark_as_sold(df, part_id):
-    """Marks one unit of a part as sold, updates profit and quantity."""
+def mark_as_sold(df, part_id, quantity_sold):
+    """Marks N units of a part as sold, updates profit and quantity."""
     index = df[df["id"] == part_id].index
 
-    if not index.empty and df.loc[index[0], "quantity"] > 0:
+    if not index.empty:
         i = index[0]
-        df.at[i, "quantity"] -= 1
-        df.at[i, "sold"] += 1
+        available_quantity = df.at[i, "quantity"]
+        if quantity_sold <= available_quantity:
+            df.at[i, "quantity"] -= quantity_sold
+            df.at[i, "sold"] += quantity_sold
 
-        profit = calculate_profit(
-            df.at[i, "buying_price_usd"],
-            df.at[i, "shipping_price_usd"],
-            df.at[i, "conversion_rate"],
-            df.at[i, "profit_margin"],
-        )
-        df.at[i, "total_profit_pkr"] += profit
-
+            profit_per_unit = calculate_profit(
+                df.at[i, "buying_price_usd"],
+                df.at[i, "shipping_price_usd"],
+                df.at[i, "conversion_rate"],
+                df.at[i, "profit_margin"]
+            )
+            df.at[i, "total_profit_pkr"] += profit_per_unit * quantity_sold
+        else:
+            raise ValueError(f"Only {available_quantity} units available to sell.")
     return df
+
