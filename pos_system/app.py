@@ -59,19 +59,27 @@ with tab2:
         st.write("### Current Inventory")
         st.dataframe(df.drop(columns=["id"]), use_container_width=True)
 
-        st.write("### Sell a Unit")
-        part_options = df[df["quantity"] > 0][["id", "name"]]
+        st.write("### Sell Part Units")
+        part_options = df[df["quantity"] > 0][["id", "name", "quantity"]]
         if not part_options.empty:
             part_selection = st.selectbox(
-                "Select Part to Mark as Sold",
+                "Select Part to Sell",
                 options=part_options["id"],
-                format_func=lambda x: f"{part_options[part_options['id'] == x]['name'].values[0]}",
+                format_func=lambda x: f"{part_options[part_options['id'] == x]['name'].values[0]}"
             )
 
+            selected_part = part_options[part_options["id"] == part_selection]
+            max_qty = int(selected_part["quantity"].values[0])
+            quantity_to_sell = st.number_input("Quantity to Sell", min_value=1, max_value=max_qty, step=1)
+
             if st.button("✅ Mark as Sold"):
-                df = mark_as_sold(df, part_selection)
-                save_inventory(df)
-                st.success("Marked as sold and updated profit!")
+                try:
+                    df = mark_as_sold(df, part_selection, quantity_to_sell)
+                    save_inventory(df)
+                    st.success(f"Marked {quantity_to_sell} unit(s) as sold.")
+                except ValueError as e:
+                    st.error(str(e))
+
 
 # 3. Partner Profit Split
 with tab3:
