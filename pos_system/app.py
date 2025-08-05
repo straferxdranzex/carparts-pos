@@ -2,12 +2,11 @@ import streamlit as st
 import pandas as pd
 import uuid
 from utils import (
-    load_inventory,
-    save_inventory,
-    calculate_profit,
-    calculate_selling_price,
-    mark_as_sold,
+    load_inventory, save_inventory,
+    calculate_profit, calculate_selling_price,
+    mark_as_sold, delete_item, reset_inventory  
 )
+
 
 st.set_page_config(page_title="Car Parts POS", layout="wide")
 st.title("🚗 Car Parts POS System")
