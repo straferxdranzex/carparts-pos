@@ -62,3 +62,19 @@ def mark_as_sold(df, part_id, quantity_sold):
             raise ValueError(f"Only {available_quantity} units available to sell.")
     return df
 
+
+def delete_item(df, part_id):
+    """Delete a part from inventory by ID."""
+    df = df[df["id"] != part_id].reset_index(drop=True)
+    return df
+
+
+def reset_inventory():
+    """Clears the entire inventory."""
+    df = pd.DataFrame(columns=[
+        "id", "name", "description", "buying_price_usd",
+        "shipping_price_usd", "conversion_rate", "profit_margin",
+        "quantity", "sold", "total_profit_pkr"
+    ])
+    save_inventory(df)
+
