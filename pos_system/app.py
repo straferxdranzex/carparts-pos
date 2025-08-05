@@ -115,5 +115,5 @@ with tab3:
         if st.button("❌ Reset Everything"):
             reset_inventory()
             st.success("Application has been reset.")
-            st.experimental_rerun()
+            st.rerun()
 
