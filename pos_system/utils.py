@@ -5,26 +5,21 @@ INVENTORY_FILE = "data/inventory.csv"
 
 
 def load_inventory():
-    """Loads inventory from CSV, creates it if it doesn't exist."""
+    """Loads inventory from CSV, creates file and folder if not exists."""
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(INVENTORY_FILE), exist_ok=True)
+
     if not os.path.exists(INVENTORY_FILE):
-        df = pd.DataFrame(
-            columns=[
-                "id",
-                "name",
-                "description",
-                "buying_price_usd",
-                "shipping_price_usd",
-                "conversion_rate",
-                "profit_margin",
-                "quantity",
-                "sold",
-                "total_profit_pkr",
-            ]
-        )
+        df = pd.DataFrame(columns=[
+            "id", "name", "description", "buying_price_usd",
+            "shipping_price_usd", "conversion_rate", "profit_margin",
+            "quantity", "sold", "total_profit_pkr"
+        ])
         df.to_csv(INVENTORY_FILE, index=False)
     else:
         df = pd.read_csv(INVENTORY_FILE)
     return df
+
 
 
 def save_inventory(df):
